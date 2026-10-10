@@ -1,0 +1,248 @@
+:root {
+  --sky: #dcf1f9;
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-2: #f3f9fc;
+  --surface-3: #e3eff5;
+  --border: #d2e4ec;
+  --text: #0f2d44;
+  --muted: #5d7689;
+  --accent: #0b7fab;
+  --accent-light: #22b3c4;
+  --accent-ink: #ffffff;
+  --in-cart: #0f3d5e;
+  --sold: #dde6ec;
+  --danger: #d64545;
+  --shadow: 0 12px 32px rgba(15, 61, 94, 0.10);
+  --radius: 16px;
+
+  --seat: 22px;
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html {
+  background: linear-gradient(180deg, #d6eef8 0%, #eef8fc 45%, #e1f2f8 100%) fixed;
+  background-color: var(--sky);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sea-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sun {
+  position: absolute;
+  top: -140px;
+  right: -90px;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 210, 130, 0.60) 0%, rgba(255, 210, 130, 0.20) 45%, transparent 70%);
+  animation: sun-glow 9s ease-in-out infinite alternate;
+}
+
+.cloud {
+  position: absolute;
+  left: -280px;
+  width: 240px;
+  height: 64px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  filter: blur(5px);
+  animation: cloud-drift 90s linear infinite;
+}
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+.cloud::before { width: 110px; height: 110px; top: -52px; left: 42px; }
+.cloud::after { width: 84px; height: 84px; top: -34px; left: 122px; }
+.cloud--1 { top: 34px; animation-duration: 85s; animation-delay: -12s; }
+.cloud--2 { top: 18px; scale: 0.7; opacity: 0.8; animation-duration: 110s; animation-delay: -64s; }
+.cloud--3 { top: 46%; scale: 0.55; opacity: 0.7; animation-duration: 140s; animation-delay: -100s; }
+
+.gull {
+  position: absolute;
+  left: -40px;
+  width: 34px;
+  height: 14px;
+  overflow: visible;
+  fill: none;
+  stroke: #2f5d78;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: 0.6;
+  animation: gull-glide 40s linear infinite;
+}
+.gull path {
+  transform-box: fill-box;
+  transform-origin: 50% 80%;
+  animation: gull-flap 1.3s ease-in-out infinite;
+}
+.gull--1 { top: 24px; animation-delay: -6s; }
+.gull--2 { top: 44px; width: 24px; animation-duration: 47s; animation-delay: -21s; }
+.gull--2 path { animation-delay: -0.4s; }
+.gull--3 { top: 14px; width: 28px; animation-duration: 55s; animation-delay: -36s; }
+.gull--3 path { animation-delay: -0.8s; }
+
+.waves {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 26vh;
+  min-height: 120px;
+  max-height: 240px;
+}
+.wave-layers use { animation: wave-move 20s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite; }
+.wave-layers use:nth-child(1) { animation-delay: -2s; animation-duration: 9s; }
+.wave-layers use:nth-child(2) { animation-delay: -3s; animation-duration: 13s; }
+.wave-layers use:nth-child(3) { animation-delay: -4s; animation-duration: 17s; }
+.wave-layers use:nth-child(4) { animation-delay: -5s; animation-duration: 24s; }
+
+@keyframes sun-glow {
+  from { scale: 1; opacity: 0.85; }
+  to { scale: 1.12; opacity: 1; }
+}
+@keyframes cloud-drift {
+  from { translate: 0 0; }
+  to { translate: calc(100vw + 560px) 0; }
+}
+@keyframes gull-glide {
+  0% { translate: 0 0; }
+  50% { translate: 50vw -34px; }
+  100% { translate: calc(100vw + 80px) 8px; }
+}
+@keyframes gull-flap {
+  0%, 100% { scale: 1 1; }
+  50% { scale: 1 0.4; }
+}
+@keyframes wave-move {
+  0% { transform: translate3d(-90px, 0, 0); }
+  100% { transform: translate3d(85px, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sea-backdrop *,
+  .sea-backdrop *::before,
+  .sea-backdrop *::after { animation: none !important; }
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.45);
+  border-bottom: 1px solid rgba(210, 228, 236, 0.8);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(11, 127, 171, 0.35);
+}
+.brand-mark svg { width: 24px; height: 24px; }
+
+.brand h1 { font-size: 1.15rem; letter-spacing: 0.01em; }
+.event { color: var(--muted); font-size: 0.85rem; }
+
+.layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "map details"
+    "map cart";
+  gap: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  align-items: start;
+}
+
+.map-panel { grid-area: map; }
+.details-panel { grid-area: details; }
+.cart-panel { grid-area: cart; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.panel h2 { font-size: 1.05rem; }
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.empty { color: var(--muted); font-size: 0.92rem; }
+.hint { color: var(--muted); font-size: 0.85rem; }
+
+.map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 24px;
+  margin-bottom: 14px;
+}
+
+.cart-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.cart-total strong { font-size: 1.35rem; color: var(--accent); }

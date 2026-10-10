@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sea Breeze Theatre — Choose Your Seats</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="sea-backdrop" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="cloud cloud--1"></div>
+    <div class="cloud cloud--2"></div>
+    <div class="cloud cloud--3"></div>
+    <svg class="gull gull--1" viewBox="0 0 24 10"><path d="M1 7 Q6 1 12 7 Q18 1 23 7"/></svg>
+    <svg class="gull gull--2" viewBox="0 0 24 10"><path d="M1 7 Q6 1 12 7 Q18 1 23 7"/></svg>
+    <svg class="gull gull--3" viewBox="0 0 24 10"><path d="M1 7 Q6 1 12 7 Q18 1 23 7"/></svg>
+    <svg class="waves" viewBox="0 24 150 28" preserveAspectRatio="none">
+      <defs>
+        <path id="wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"/>
+      </defs>
+      <g class="wave-layers">
+        <use href="#wave" x="48" y="0" fill="rgba(34, 179, 196, 0.22)"/>
+        <use href="#wave" x="48" y="3" fill="rgba(11, 127, 171, 0.18)"/>
+        <use href="#wave" x="48" y="5" fill="rgba(11, 127, 171, 0.14)"/>
+        <use href="#wave" x="48" y="7" fill="rgba(15, 61, 94, 0.16)"/>
+      </g>
+    </svg>
+  </div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 13c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 18c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/></svg>
+      </span>
+      <div>
+        <h1>Sea Breeze Theatre</h1>
+        <p class="event">Sunset Symphony Night · Sat 19 Dec 2026 · 19:00</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="map-panel panel" aria-labelledby="map-heading">
+      <div class="map-toolbar">
+        <div>
+          <h2 id="map-heading">Choose your seats</h2>
+          <p class="hint">The seat map will appear here.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="details-panel panel" id="details-panel" aria-labelledby="details-heading">
+      <div class="panel-head">
+        <h2 id="details-heading">Seat details</h2>
+      </div>
+
+      <p class="empty">Seat details will appear here.</p>
+    </section>
+
+    <section class="cart-panel panel" id="cart-panel" aria-labelledby="cart-heading">
+      <div class="panel-head">
+        <h2 id="cart-heading">Your cart</h2>
+      </div>
+      <p class="empty">Your cart is empty.</p>
+      <div class="cart-total">
+        <span>Total</span>
+        <strong>0 AZN</strong>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
