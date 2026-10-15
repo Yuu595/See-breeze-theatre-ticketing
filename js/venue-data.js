@@ -7,6 +7,24 @@ const CATEGORIES = {
   economy:  { id: "economy",  label: "Economy",  price: 30,  color: "#8b93f5" },
 };
 
+function createBoxes(side, x, rotate) {
+  const boxes = [];
+  for (let n = 1; n <= 4; n++) {
+    boxes.push({
+      id: `B${side}${n}`,
+      name: `Box ${side}${n}`,
+      type: "box",
+      category: "vip",
+      rows: ["A", "B"],
+      seatsPerRow: 2,
+      x: x,
+      y: 190 + (n - 1) * 92,
+      rotate: rotate,
+    });
+  }
+  return boxes;
+}
+
 const VENUE = {
   name: "Sea Breeze Theatre",
   event: "Sunset Symphony Night",
@@ -37,6 +55,8 @@ const VENUE = {
       seatsPerRow: 7,
       x: 942, y: 190, rotate: -12,
     },
+    ...createBoxes("L", 72, 14),
+    ...createBoxes("R", 1128, -14),
     {
       id: "DC", name: "Dress Circle", type: "block", category: "standard",
       rows: ["J", "K", "L", "M"],

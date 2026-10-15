@@ -45,8 +45,12 @@
       <div class="map-toolbar">
         <div>
           <h2 id="map-heading">Choose your seats</h2>
-          <p class="hint">The seat map will appear here.</p>
+          <p class="hint"><span id="seat-count">0</span> seats · click a seat to see its details</p>
         </div>
+      </div>
+
+      <div class="map-viewport" id="map-viewport">
+        <div class="map-world" id="map-world"></div>
       </div>
     </section>
 
@@ -71,5 +75,6 @@
   </main>
 
   <script src="js/venue-data.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
