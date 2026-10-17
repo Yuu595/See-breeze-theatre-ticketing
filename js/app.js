@@ -5,13 +5,24 @@
 
   const els = {
     world: document.getElementById("map-world"),
+    priceLegend: document.getElementById("price-legend"),
     seatCount: document.getElementById("seat-count"),
   };
 
   const seatButtons = new Map();
 
+  const STATUS_TEXT = {
+    available: "Available",
+    unavailable: "Unavailable — already sold",
+  };
+
   function formatPrice(amount) {
     return `${amount} ${VENUE.currency}`;
+  }
+
+  function getStatus(seat) {
+    if (seat.unavailable) return "unavailable";
+    return "available";
   }
 
   function el(tag, className, text) {
@@ -19,6 +30,16 @@
     if (className) node.className = className;
     if (text !== undefined) node.textContent = text;
     return node;
+  }
+
+  function renderLegend() {
+    Object.values(CATEGORIES).forEach((category) => {
+      const item = el("li", "legend-item");
+      const chip = el("span", "chip");
+      chip.style.background = category.color;
+      item.append(chip, el("span", "", `${category.label} `), el("strong", "", formatPrice(category.price)));
+      els.priceLegend.append(item);
+    });
   }
 
   function renderStage() {
@@ -94,8 +115,21 @@
     els.seatCount.textContent = String(totalSeats);
   }
 
+  function updateSeatButton(id) {
+    const seat = seatIndex.get(id);
+    const button = seatButtons.get(id);
+    if (!seat || !button) return;
+
+    const status = getStatus(seat);
+
+    button.dataset.status = status;
+  }
+
   function init() {
+    renderLegend();
     renderVenue();
+
+    seatIndex.forEach((seat, id) => updateSeatButton(id));
   }
 
   init();

@@ -36,6 +36,18 @@ const VENUE = {
 
   stage: { x: 600, y: 34, width: 540, height: 96, label: "STAGE" },
 
+  soldSeats: [
+    "SC-A-2", "SC-A-9", "SC-B-5", "SC-B-11", "SC-C-3", "SC-C-8", "SC-C-13", "SC-E-6",
+    "SC-E-12", "SC-F-2", "SC-F-15", "SC-G-9", "SC-G-10", "SC-H-1", "SC-H-17",
+    "SL-A-3", "SL-B-6", "SL-D-2", "SL-E-5", "SL-G-1", "SL-H-7",
+    "SR-A-5", "SR-C-4", "SR-D-7", "SR-F-2", "SR-G-5", "SR-H-3",
+    "BL1-B-2", "BR3-A-1",
+    "DC-J-4", "DC-J-15", "DC-K-9", "DC-K-20", "DC-L-1", "DC-L-13", "DC-M-6", "DC-M-18", "DC-M-24",
+    "BA-N-10", "BA-N-22", "BA-P-3", "BA-P-16", "BA-Q-7", "BA-Q-19", "BA-R-12", "BA-R-25",
+    "BA-S-4", "BA-S-14", "BA-T-9", "BA-T-20",
+  ],
+  soldOutSections: ["BR2"],
+
   sections: [
     {
       id: "SC", name: "Stalls Centre", type: "block", category: "premium",
@@ -106,6 +118,7 @@ function buildVenueModel(venue) {
           number: number,
           category: category,
           price: category.price,
+          unavailable: venue.soldOutSections.includes(section.id) || venue.soldSeats.includes(id),
         };
         seats.push(seat);
         seatIndex.set(id, seat);
