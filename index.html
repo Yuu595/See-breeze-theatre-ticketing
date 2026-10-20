@@ -51,6 +51,7 @@
           <ul class="legend" id="price-legend" aria-label="Price categories"></ul>
           <ul class="legend legend--states" aria-label="Seat states">
             <li class="legend-item"><span class="seat seat--demo seat--demo-available" data-status="available"></span>Available</li>
+            <li class="legend-item"><span class="seat seat--demo seat--demo-available is-inspected" data-status="available"></span>Inspecting</li>
             <li class="legend-item"><span class="seat seat--demo" data-status="unavailable"></span>Unavailable</li>
           </ul>
         </div>
@@ -66,7 +67,27 @@
         <h2 id="details-heading">Seat details</h2>
       </div>
 
-      <p class="empty">Seat details will appear here.</p>
+      <p class="empty" id="details-empty">
+        Click any seat on the map to inspect it. Nothing is added to your cart until you press
+        <strong>Add to cart</strong>.
+      </p>
+
+      <div class="details-body" id="details-body" hidden>
+        <div class="details-top">
+          <p class="details-category"><span class="chip" id="d-chip"></span><span id="d-category"></span></p>
+          <p class="details-price" id="d-price"></p>
+        </div>
+        <dl class="details-grid">
+          <div><dt>Section</dt><dd id="d-section"></dd></div>
+          <div><dt>Row</dt><dd id="d-row"></dd></div>
+          <div><dt>Seat</dt><dd id="d-seat"></dd></div>
+          <div><dt>Seat ID</dt><dd id="d-id"></dd></div>
+          <div class="details-status"><dt>Status</dt><dd id="d-status"></dd></div>
+        </dl>
+        <p class="note" id="d-note"></p>
+        <div class="details-actions">
+        </div>
+      </div>
     </section>
 
     <section class="cart-panel panel" id="cart-panel" aria-labelledby="cart-heading">

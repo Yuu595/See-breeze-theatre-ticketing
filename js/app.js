@@ -7,9 +7,23 @@
     world: document.getElementById("map-world"),
     priceLegend: document.getElementById("price-legend"),
     seatCount: document.getElementById("seat-count"),
+
+    detailsPanel: document.getElementById("details-panel"),
+    detailsEmpty: document.getElementById("details-empty"),
+    detailsBody: document.getElementById("details-body"),
+    dChip: document.getElementById("d-chip"),
+    dCategory: document.getElementById("d-category"),
+    dSection: document.getElementById("d-section"),
+    dRow: document.getElementById("d-row"),
+    dSeat: document.getElementById("d-seat"),
+    dId: document.getElementById("d-id"),
+    dStatus: document.getElementById("d-status"),
+    dPrice: document.getElementById("d-price"),
+    dNote: document.getElementById("d-note"),
   };
 
   const seatButtons = new Map();
+  let inspectedId = null;
 
   const STATUS_TEXT = {
     available: "Available",
@@ -121,8 +135,49 @@
     if (!seat || !button) return;
 
     const status = getStatus(seat);
+    const inspected = id === inspectedId;
 
     button.dataset.status = status;
+    button.classList.toggle("is-inspected", inspected);
+    button.setAttribute("aria-pressed", String(inspected));
+  }
+
+  function inspectSeat(id) {
+    if (!seatIndex.has(id)) return;
+    const previous = inspectedId;
+    inspectedId = id;
+    if (previous && previous !== id) updateSeatButton(previous);
+    updateSeatButton(id);
+    renderDetails();
+  }
+
+  function renderDetails() {
+    const seat = inspectedId ? seatIndex.get(inspectedId) : null;
+    els.detailsPanel.classList.toggle("has-seat", Boolean(seat));
+    els.detailsEmpty.hidden = Boolean(seat);
+    els.detailsBody.hidden = !seat;
+    if (!seat) return;
+
+    const status = getStatus(seat);
+    els.dChip.style.background = seat.category.color;
+    els.dCategory.textContent = seat.category.label;
+    els.dSection.textContent = seat.section.name;
+    els.dRow.textContent = seat.row;
+    els.dSeat.textContent = seat.number;
+    els.dId.textContent = seat.id;
+    els.dStatus.textContent = STATUS_TEXT[status];
+    els.dStatus.dataset.status = status;
+    els.dPrice.textContent = formatPrice(seat.price);
+    els.dNote.textContent = status === "available"
+      ? "This seat is available."
+      : "This seat has already been sold.";
+  }
+
+  function bindEvents() {
+    els.world.addEventListener("click", (event) => {
+      const button = event.target.closest(".seat");
+      if (button) inspectSeat(button.dataset.id);
+    });
   }
 
   function init() {
@@ -130,6 +185,9 @@
     renderVenue();
 
     seatIndex.forEach((seat, id) => updateSeatButton(id));
+    renderDetails();
+
+    bindEvents();
   }
 
   init();
