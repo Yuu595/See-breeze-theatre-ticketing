@@ -20,6 +20,12 @@
     dStatus: document.getElementById("d-status"),
     dPrice: document.getElementById("d-price"),
     dNote: document.getElementById("d-note"),
+    addButton: document.getElementById("add-to-cart"),
+
+    cartList: document.getElementById("cart-list"),
+    cartEmpty: document.getElementById("cart-empty"),
+    cartTotal: document.getElementById("cart-total"),
+    cartCount: document.getElementById("cart-count"),
   };
 
   const seatButtons = new Map();
@@ -27,6 +33,7 @@
 
   const STATUS_TEXT = {
     available: "Available",
+    "in-cart": "In your cart",
     unavailable: "Unavailable — already sold",
   };
 
@@ -36,6 +43,7 @@
 
   function getStatus(seat) {
     if (seat.unavailable) return "unavailable";
+    if (Cart.has(seat.id)) return "in-cart";
     return "available";
   }
 
@@ -168,9 +176,66 @@
     els.dStatus.textContent = STATUS_TEXT[status];
     els.dStatus.dataset.status = status;
     els.dPrice.textContent = formatPrice(seat.price);
-    els.dNote.textContent = status === "available"
-      ? "This seat is available."
-      : "This seat has already been sold.";
+
+    els.addButton.disabled = status !== "available";
+
+    if (status === "available") {
+      els.addButton.textContent = "Add to cart";
+      els.dNote.textContent = "Not in your cart yet. Press Add to cart to book this seat.";
+    } else if (status === "in-cart") {
+      els.addButton.textContent = "Already in cart ✓";
+      els.dNote.textContent = "This seat is already in your cart. Each seat can only be added once.";
+    } else {
+      els.addButton.textContent = "Unavailable";
+      els.dNote.textContent = "This seat has already been sold, so it cannot be added to the cart.";
+    }
+  }
+
+  function addInspectedToCart() {
+    const seat = inspectedId ? seatIndex.get(inspectedId) : null;
+    if (!seat) return;
+    if (seat.unavailable || !Cart.add(seat.id)) return;
+
+    updateSeatButton(seat.id);
+    renderDetails();
+    renderCart();
+  }
+
+  function renderCart() {
+    const ids = Cart.items();
+    const seats = ids.map((id) => seatIndex.get(id));
+
+    let total = 0;
+    for (const seat of seats) {
+      total += seat.price;
+    }
+
+    els.cartList.replaceChildren(...seats.map(createCartItem));
+    els.cartEmpty.hidden = seats.length > 0;
+
+    const countText = `${seats.length} ticket${seats.length === 1 ? "" : "s"}`;
+    els.cartCount.textContent = countText;
+    els.cartTotal.textContent = formatPrice(total);
+  }
+
+  function createCartItem(seat) {
+    const item = el("li", "cart-item");
+
+    const chip = el("span", "chip");
+    chip.style.background = seat.category.color;
+
+    const info = el("div", "cart-item-info");
+    info.append(
+      el("span", "cart-item-title", seat.section.name),
+      el("span", "cart-item-meta", `Row ${seat.row} · Seat ${seat.number} · ${seat.category.label}`)
+    );
+
+    const side = el("div", "cart-item-side");
+    const price = el("span", "cart-item-price", formatPrice(seat.price));
+    side.append(price);
+
+    item.append(chip, info, side);
+    return item;
   }
 
   function bindEvents() {
@@ -178,6 +243,8 @@
       const button = event.target.closest(".seat");
       if (button) inspectSeat(button.dataset.id);
     });
+
+    els.addButton.addEventListener("click", addInspectedToCart);
   }
 
   function init() {
@@ -185,6 +252,7 @@
     renderVenue();
 
     seatIndex.forEach((seat, id) => updateSeatButton(id));
+    renderCart();
     renderDetails();
 
     bindEvents();
