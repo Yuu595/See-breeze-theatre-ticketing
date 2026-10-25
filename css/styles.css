@@ -481,6 +481,12 @@ button { font: inherit; color: inherit; }
   box-shadow: none;
   cursor: not-allowed;
 }
+.btn-secondary {
+  background: #ffffff;
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-secondary:hover { border-color: var(--danger); color: var(--danger); }
 
 .cart-list {
   display: flex;
@@ -524,6 +530,17 @@ button { font: inherit; color: inherit; }
 }
 .cart-item-price { font-weight: 700; white-space: nowrap; }
 
+.btn-remove {
+  min-height: 28px;
+  padding: 2px 10px;
+  border-color: var(--border);
+  background: #ffffff;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.btn-remove:hover { border-color: var(--danger); color: var(--danger); }
+
 .cart-total {
   display: flex;
   align-items: baseline;
@@ -533,3 +550,39 @@ button { font: inherit; color: inherit; }
   border-top: 1px solid var(--border);
 }
 .cart-total strong { font-size: 1.35rem; color: var(--accent); }
+
+.toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  max-width: min(92vw, 460px);
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--muted);
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: 0 12px 30px rgba(15, 61, 94, 0.18);
+  font-size: 0.9rem;
+  animation: toast-in 0.2s ease;
+  transition: opacity 0.3s, translate 0.3s;
+}
+.toast--success { border-left-color: #138a5a; }
+.toast--warn { border-left-color: #f2b544; }
+.toast--error { border-left-color: var(--danger); }
+.toast.is-leaving { opacity: 0; translate: 0 8px; }
+
+@keyframes toast-in {
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
+}

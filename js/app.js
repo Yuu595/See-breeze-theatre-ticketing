@@ -21,11 +21,14 @@
     dPrice: document.getElementById("d-price"),
     dNote: document.getElementById("d-note"),
     addButton: document.getElementById("add-to-cart"),
+    detailsRemove: document.getElementById("details-remove"),
 
     cartList: document.getElementById("cart-list"),
     cartEmpty: document.getElementById("cart-empty"),
     cartTotal: document.getElementById("cart-total"),
     cartCount: document.getElementById("cart-count"),
+
+    toastRegion: document.getElementById("toast-region"),
   };
 
   const seatButtons = new Map();
@@ -39,6 +42,10 @@
 
   function formatPrice(amount) {
     return `${amount} ${VENUE.currency}`;
+  }
+
+  function seatTitle(seat) {
+    return `${seat.section.name} · Row ${seat.row}, Seat ${seat.number}`;
   }
 
   function getStatus(seat) {
@@ -178,6 +185,7 @@
     els.dPrice.textContent = formatPrice(seat.price);
 
     els.addButton.disabled = status !== "available";
+    els.detailsRemove.hidden = status !== "in-cart";
 
     if (status === "available") {
       els.addButton.textContent = "Add to cart";
@@ -194,11 +202,29 @@
   function addInspectedToCart() {
     const seat = inspectedId ? seatIndex.get(inspectedId) : null;
     if (!seat) return;
-    if (seat.unavailable || !Cart.add(seat.id)) return;
+
+    if (seat.unavailable) {
+      toast("This seat is unavailable and cannot be added.", "error");
+      return;
+    }
+    if (!Cart.add(seat.id)) {
+      toast("This seat is already in your cart.", "warn");
+      return;
+    }
 
     updateSeatButton(seat.id);
     renderDetails();
     renderCart();
+    toast(`Added ${seatTitle(seat)} — ${formatPrice(seat.price)}`, "success");
+  }
+
+  function removeFromCart(id) {
+    const seat = seatIndex.get(id);
+    if (!seat || !Cart.remove(id)) return;
+    updateSeatButton(id);
+    renderDetails();
+    renderCart();
+    toast(`Removed ${seatTitle(seat)}`, "info");
   }
 
   function renderCart() {
@@ -232,10 +258,22 @@
 
     const side = el("div", "cart-item-side");
     const price = el("span", "cart-item-price", formatPrice(seat.price));
-    side.append(price);
+    const remove = el("button", "btn btn-remove", "Remove");
+    remove.type = "button";
+    remove.dataset.remove = seat.id;
+    remove.setAttribute("aria-label", `Remove ${seatTitle(seat)} from cart`);
+    side.append(price, remove);
 
     item.append(chip, info, side);
     return item;
+  }
+
+  function toast(message, type = "info") {
+    const node = el("div", `toast toast--${type}`, message);
+    els.toastRegion.append(node);
+    while (els.toastRegion.children.length > 3) els.toastRegion.firstElementChild.remove();
+    setTimeout(() => node.classList.add("is-leaving"), 2400);
+    setTimeout(() => node.remove(), 2800);
   }
 
   function bindEvents() {
@@ -245,6 +283,15 @@
     });
 
     els.addButton.addEventListener("click", addInspectedToCart);
+    els.detailsRemove.addEventListener("click", () => removeFromCart(inspectedId));
+
+    els.cartList.addEventListener("click", (event) => {
+      const removeButton = event.target.closest("[data-remove]");
+      if (removeButton) {
+        removeFromCart(removeButton.dataset.remove);
+        return;
+      }
+    });
   }
 
   function init() {
