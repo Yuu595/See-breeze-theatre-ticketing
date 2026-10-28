@@ -298,6 +298,7 @@
     renderLegend();
     renderVenue();
 
+    Cart.load((id) => seatIndex.has(id) && !seatIndex.get(id).unavailable);
     seatIndex.forEach((seat, id) => updateSeatButton(id));
     renderCart();
     renderDetails();
