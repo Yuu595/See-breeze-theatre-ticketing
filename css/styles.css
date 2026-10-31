@@ -266,7 +266,7 @@ button { font: inherit; color: inherit; }
   position: relative;
   height: calc(100vh - 290px);
   min-height: 440px;
-  overflow: auto;
+  overflow: hidden;
   border-radius: 12px;
   border: 1px solid var(--border);
   background:
@@ -275,11 +275,14 @@ button { font: inherit; color: inherit; }
 }
 
 .map-world {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   border-radius: 48px;
   background: linear-gradient(180deg, #ffffff 0%, #f6fbfd 100%);
   box-shadow: inset 0 0 0 2px #d6e8f0, 0 18px 40px rgba(15, 61, 94, 0.10);
 }
+.map-world.is-animated { transition: transform 0.28s ease; }
 
 .stage {
   position: absolute;
@@ -428,6 +431,68 @@ button { font: inherit; color: inherit; }
 }
 .seat--demo.is-inspected { scale: 1; box-shadow: 0 0 0 2px #0f2d44, 0 0 6px rgba(11, 127, 171, 0.6); }
 .seat--demo[data-status="in-cart"]::after { font-size: 10px; line-height: 16px; }
+
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 12px;
+}
+
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.ctrl {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.ctrl svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ctrl:hover:not(:disabled) { background: #e6f5fb; border-color: var(--accent); color: var(--accent); }
+.ctrl:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.zoom-level {
+  min-width: 48px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.ctrl-reset {
+  display: inline-flex;
+  gap: 8px;
+  width: auto;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.ctrl-reset svg { width: 16px; height: 16px; }
 
 .details-top {
   display: flex;

@@ -61,6 +61,36 @@
       <div class="map-viewport" id="map-viewport">
         <div class="map-world" id="map-world"></div>
       </div>
+
+      <div class="map-controls" id="map-controls" role="toolbar" aria-label="Map controls">
+        <div class="ctrl-group" aria-label="Zoom">
+          <button type="button" class="ctrl" data-action="zoom-out" aria-label="Zoom out" title="Zoom out (−)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+          </button>
+          <span class="zoom-level" id="zoom-level" aria-live="polite">100%</span>
+          <button type="button" class="ctrl" data-action="zoom-in" aria-label="Zoom in" title="Zoom in (+)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>
+          </button>
+        </div>
+        <div class="ctrl-group" aria-label="Move">
+          <button type="button" class="ctrl" data-action="left" aria-label="Move left" title="Move left (←)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button type="button" class="ctrl" data-action="up" aria-label="Move up" title="Move up (↑)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+          </button>
+          <button type="button" class="ctrl" data-action="down" aria-label="Move down" title="Move down (↓)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <button type="button" class="ctrl" data-action="right" aria-label="Move right" title="Move right (→)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button type="button" class="ctrl ctrl-reset" data-action="reset" title="Reset and centre the view (0)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg>
+          Reset view
+        </button>
+      </div>
     </section>
 
     <section class="details-panel panel" id="details-panel" aria-labelledby="details-heading">
@@ -111,6 +141,7 @@
 
   <script src="js/venue-data.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/map-view.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

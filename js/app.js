@@ -4,8 +4,11 @@
   const { sections, seatIndex, totalSeats } = VENUE_MODEL;
 
   const els = {
+    viewport: document.getElementById("map-viewport"),
     world: document.getElementById("map-world"),
     priceLegend: document.getElementById("price-legend"),
+    controls: document.getElementById("map-controls"),
+    zoomLevel: document.getElementById("zoom-level"),
     seatCount: document.getElementById("seat-count"),
 
     detailsPanel: document.getElementById("details-panel"),
@@ -134,8 +137,6 @@
   }
 
   function renderVenue() {
-    els.world.style.width = `${VENUE.width}px`;
-    els.world.style.height = `${VENUE.height}px`;
     renderStage();
     renderFeatures();
     const fragment = document.createDocumentFragment();
@@ -276,6 +277,34 @@
     setTimeout(() => node.remove(), 2800);
   }
 
+  function updateControls(state) {
+    els.zoomLevel.textContent = `${state.zoomPercent}%`;
+    const disabled = {
+      "zoom-in": !state.canZoomIn,
+      "zoom-out": !state.canZoomOut,
+      up: !state.canMoveUp,
+      down: !state.canMoveDown,
+      left: !state.canMoveLeft,
+      right: !state.canMoveRight,
+    };
+    els.controls.querySelectorAll("button[data-action]").forEach((button) => {
+      button.disabled = Boolean(disabled[button.dataset.action]);
+    });
+  }
+
+  function handleControl(action) {
+    const actions = {
+      "zoom-in": MapView.zoomIn,
+      "zoom-out": MapView.zoomOut,
+      up: () => MapView.move("up"),
+      down: () => MapView.move("down"),
+      left: () => MapView.move("left"),
+      right: () => MapView.move("right"),
+      reset: () => MapView.reset(true),
+    };
+    if (actions[action]) actions[action]();
+  }
+
   function bindEvents() {
     els.world.addEventListener("click", (event) => {
       const button = event.target.closest(".seat");
@@ -292,6 +321,11 @@
         return;
       }
     });
+
+    els.controls.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (button) handleControl(button.dataset.action);
+    });
   }
 
   function init() {
@@ -302,6 +336,14 @@
     seatIndex.forEach((seat, id) => updateSeatButton(id));
     renderCart();
     renderDetails();
+
+    MapView.init({
+      viewport: els.viewport,
+      world: els.world,
+      width: VENUE.width,
+      height: VENUE.height,
+      onChange: updateControls,
+    });
 
     bindEvents();
   }
