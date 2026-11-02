@@ -84,6 +84,39 @@ const MapView = (function () {
     apply(animate);
   }
 
+  function focusOn(element) {
+    const seatBox = element.getBoundingClientRect();
+    const mapBox = viewport.getBoundingClientRect();
+
+    const distanceX = (seatBox.left + seatBox.width / 2) - (mapBox.left + mapBox.width / 2);
+    const distanceY = (seatBox.top + seatBox.height / 2) - (mapBox.top + mapBox.height / 2);
+
+    view.x -= distanceX / currentScale();
+    view.y -= distanceY / currentScale();
+    keepInside();
+    setZoom(Math.max(view.zoom, 2));
+  }
+
+  function enableKeyboard() {
+    viewport.addEventListener("keydown", (event) => {
+      const actions = {
+        ArrowUp: () => move("up"),
+        ArrowDown: () => move("down"),
+        ArrowLeft: () => move("left"),
+        ArrowRight: () => move("right"),
+        "+": zoomIn,
+        "=": zoomIn,
+        "-": zoomOut,
+        "_": zoomOut,
+        "0": () => reset(true),
+      };
+      const action = actions[event.key];
+      if (!action) return;
+      event.preventDefault();
+      action();
+    });
+  }
+
   function init(options) {
     viewport = options.viewport;
     world = options.world;
@@ -94,8 +127,12 @@ const MapView = (function () {
     world.style.width = `${venueWidth}px`;
     world.style.height = `${venueHeight}px`;
 
+    enableKeyboard();
+
+    new ResizeObserver(() => apply(false)).observe(viewport);
+
     reset(false);
   }
 
-  return { init, zoomIn, zoomOut, move, reset };
+  return { init, zoomIn, zoomOut, move, reset, focusOn };
 })();

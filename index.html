@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sea Breeze Theatre — Choose Your Seats</title>
+  <meta name="description" content="Interactive seat selection for the Sea Breeze Theatre.">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -38,6 +39,10 @@
         <p class="event">Sunset Symphony Night · Sat 19 Dec 2026 · 19:00</p>
       </div>
     </div>
+    <a class="header-cart" href="#cart-panel">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 5v12" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2 2"/></svg>
+      <span><span id="header-cart-count">0 tickets</span> · <strong id="header-cart-total">0 AZN</strong></span>
+    </a>
   </header>
 
   <main class="layout">
@@ -58,7 +63,8 @@
         </div>
       </div>
 
-      <div class="map-viewport" id="map-viewport">
+      <div class="map-viewport" id="map-viewport" tabindex="0"
+           aria-label="Venue map. Arrow keys move the view, plus and minus zoom, 0 resets.">
         <div class="map-world" id="map-world"></div>
       </div>
 
@@ -96,6 +102,7 @@
     <section class="details-panel panel" id="details-panel" aria-labelledby="details-heading">
       <div class="panel-head">
         <h2 id="details-heading">Seat details</h2>
+        <button type="button" class="icon-btn" id="details-close" aria-label="Close seat details" title="Close (Esc)">×</button>
       </div>
 
       <p class="empty" id="details-empty">
@@ -126,6 +133,7 @@
     <section class="cart-panel panel" id="cart-panel" aria-labelledby="cart-heading">
       <div class="panel-head">
         <h2 id="cart-heading">Your cart</h2>
+        <button type="button" class="link-btn" id="clear-cart" hidden>Clear all</button>
       </div>
       <p class="empty" id="cart-empty">Your cart is empty.</p>
       <ul class="cart-list" id="cart-list" aria-live="polite"></ul>
@@ -136,6 +144,10 @@
       <p class="small">Your cart is saved in this browser, so it is still here after a refresh.</p>
     </section>
   </main>
+
+  <footer class="site-footer">
+    Front-end demo — no real payment or booking takes place.
+  </footer>
 
   <div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
 

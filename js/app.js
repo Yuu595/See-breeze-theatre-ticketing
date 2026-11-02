@@ -25,11 +25,15 @@
     dNote: document.getElementById("d-note"),
     addButton: document.getElementById("add-to-cart"),
     detailsRemove: document.getElementById("details-remove"),
+    detailsClose: document.getElementById("details-close"),
 
     cartList: document.getElementById("cart-list"),
     cartEmpty: document.getElementById("cart-empty"),
     cartTotal: document.getElementById("cart-total"),
     cartCount: document.getElementById("cart-count"),
+    clearCart: document.getElementById("clear-cart"),
+    headerCount: document.getElementById("header-cart-count"),
+    headerTotal: document.getElementById("header-cart-total"),
 
     toastRegion: document.getElementById("toast-region"),
   };
@@ -93,6 +97,7 @@
       node.style.top = `${feature.y}px`;
       if (feature.width) node.style.width = `${feature.width}px`;
       if (feature.height) node.style.height = `${feature.height}px`;
+      node.setAttribute("aria-hidden", "true");
       els.world.append(node);
     });
   }
@@ -109,6 +114,7 @@
   function renderSection(section) {
     const category = CATEGORIES[section.category];
     const node = el("section", `venue-section venue-section--${section.type}`);
+    node.setAttribute("aria-label", `${section.name}, ${category.label}, ${formatPrice(category.price)} per seat`);
     node.style.left = `${section.x}px`;
     node.style.top = `${section.y}px`;
     node.style.transform = `translateX(-50%) rotate(${section.rotate || 0}deg)`;
@@ -156,6 +162,11 @@
     button.dataset.status = status;
     button.classList.toggle("is-inspected", inspected);
     button.setAttribute("aria-pressed", String(inspected));
+    button.setAttribute(
+      "aria-label",
+      `${seat.section.name}, row ${seat.row}, seat ${seat.number}, ${seat.category.label}, ${formatPrice(seat.price)}, ${STATUS_TEXT[status]}`
+    );
+    button.title = `${seatTitle(seat)} — ${formatPrice(seat.price)} (${STATUS_TEXT[status]})`;
   }
 
   function inspectSeat(id) {
@@ -164,6 +175,13 @@
     inspectedId = id;
     if (previous && previous !== id) updateSeatButton(previous);
     updateSeatButton(id);
+    renderDetails();
+  }
+
+  function clearInspection() {
+    const previous = inspectedId;
+    inspectedId = null;
+    if (previous) updateSeatButton(previous);
     renderDetails();
   }
 
@@ -228,6 +246,15 @@
     toast(`Removed ${seatTitle(seat)}`, "info");
   }
 
+  function clearCart() {
+    const removed = Cart.clear();
+    if (removed.length === 0) return;
+    removed.forEach(updateSeatButton);
+    renderDetails();
+    renderCart();
+    toast(`Removed ${removed.length} ticket${removed.length === 1 ? "" : "s"} from your cart`, "info");
+  }
+
   function renderCart() {
     const ids = Cart.items();
     const seats = ids.map((id) => seatIndex.get(id));
@@ -239,10 +266,13 @@
 
     els.cartList.replaceChildren(...seats.map(createCartItem));
     els.cartEmpty.hidden = seats.length > 0;
+    els.clearCart.hidden = seats.length === 0;
 
     const countText = `${seats.length} ticket${seats.length === 1 ? "" : "s"}`;
     els.cartCount.textContent = countText;
     els.cartTotal.textContent = formatPrice(total);
+    els.headerCount.textContent = countText;
+    els.headerTotal.textContent = formatPrice(total);
   }
 
   function createCartItem(seat) {
@@ -251,7 +281,10 @@
     const chip = el("span", "chip");
     chip.style.background = seat.category.color;
 
-    const info = el("div", "cart-item-info");
+    const info = el("button", "cart-item-info");
+    info.type = "button";
+    info.dataset.locate = seat.id;
+    info.title = "Show this seat on the map";
     info.append(
       el("span", "cart-item-title", seat.section.name),
       el("span", "cart-item-meta", `Row ${seat.row} · Seat ${seat.number} · ${seat.category.label}`)
@@ -313,6 +346,8 @@
 
     els.addButton.addEventListener("click", addInspectedToCart);
     els.detailsRemove.addEventListener("click", () => removeFromCart(inspectedId));
+    els.detailsClose.addEventListener("click", clearInspection);
+    els.clearCart.addEventListener("click", clearCart);
 
     els.cartList.addEventListener("click", (event) => {
       const removeButton = event.target.closest("[data-remove]");
@@ -320,11 +355,21 @@
         removeFromCart(removeButton.dataset.remove);
         return;
       }
+      const locateButton = event.target.closest("[data-locate]");
+      if (locateButton) {
+        const id = locateButton.dataset.locate;
+        inspectSeat(id);
+        MapView.focusOn(seatButtons.get(id));
+      }
     });
 
     els.controls.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-action]");
       if (button) handleControl(button.dataset.action);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && inspectedId) clearInspection();
     });
   }
 
