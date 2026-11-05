@@ -5,6 +5,7 @@ const MapView = (function () {
   const MIN_ZOOM = 0.5;
   const MAX_ZOOM = 6;
   const MOVE_STEP = 150;
+  const DRAG_THRESHOLD = 5;
 
   let viewport = null;
   let world = null;
@@ -117,6 +118,71 @@ const MapView = (function () {
     });
   }
 
+  function enableMouseNavigation() {
+    let lastWheelTime = 0;
+    viewport.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      const now = Date.now();
+      if (now - lastWheelTime < 150) return;
+      lastWheelTime = now;
+      if (event.deltaY < 0) zoomIn();
+      else zoomOut();
+    }, { passive: false });
+
+    let drag = null;
+    let suppressClick = false;
+
+    viewport.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      drag = {
+        id: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        viewX: view.x,
+        viewY: view.y,
+        moved: false,
+      };
+    });
+
+    viewport.addEventListener("pointermove", (event) => {
+      if (!drag || event.pointerId !== drag.id) return;
+      const dx = event.clientX - drag.startX;
+      const dy = event.clientY - drag.startY;
+
+      if (!drag.moved) {
+        if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+        drag.moved = true;
+        viewport.setPointerCapture(event.pointerId);
+        viewport.classList.add("is-dragging");
+      }
+
+      view.x = drag.viewX + dx / currentScale();
+      view.y = drag.viewY + dy / currentScale();
+      keepInside();
+      apply(false);
+    });
+
+    function endDrag(event) {
+      if (!drag || event.pointerId !== drag.id) return;
+      if (drag.moved) {
+        suppressClick = true;
+        setTimeout(() => { suppressClick = false; }, 0);
+        viewport.classList.remove("is-dragging");
+      }
+      drag = null;
+    }
+    viewport.addEventListener("pointerup", endDrag);
+    viewport.addEventListener("pointercancel", endDrag);
+
+    viewport.addEventListener("click", (event) => {
+      if (suppressClick) {
+        event.stopPropagation();
+        event.preventDefault();
+        suppressClick = false;
+      }
+    }, true);
+  }
+
   function init(options) {
     viewport = options.viewport;
     world = options.world;
@@ -128,6 +194,7 @@ const MapView = (function () {
     world.style.height = `${venueHeight}px`;
 
     enableKeyboard();
+    enableMouseNavigation();
 
     new ResizeObserver(() => apply(false)).observe(viewport);
 

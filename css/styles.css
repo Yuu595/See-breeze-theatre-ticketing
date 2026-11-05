@@ -289,7 +289,13 @@ button { font: inherit; color: inherit; }
   background:
     radial-gradient(ellipse at 50% 0%, rgba(34, 179, 196, 0.14), transparent 60%),
     linear-gradient(180deg, #f4fbfe 0%, #e2f2f8 100%);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
+.map-viewport.is-dragging { cursor: grabbing; }
+.map-viewport.is-dragging .seat { cursor: grabbing; }
 
 .map-world {
   position: absolute;
@@ -510,6 +516,8 @@ button { font: inherit; color: inherit; }
   font-weight: 600;
 }
 .ctrl-reset svg { width: 16px; height: 16px; }
+
+.map-tip { margin-left: auto; color: var(--muted); font-size: 0.8rem; }
 
 .icon-btn {
   width: 30px;
@@ -756,6 +764,7 @@ button { font: inherit; color: inherit; }
   .ctrl { width: 36px; height: 36px; }
   .ctrl-reset { height: 46px; width: 100%; justify-content: center; }
   .zoom-level { min-width: 42px; font-size: 0.75rem; }
+  .map-tip { display: none; }
 
   .details-panel.has-seat {
     position: sticky;
