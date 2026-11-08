@@ -788,3 +788,9 @@ button { font: inherit; color: inherit; }
 
   .toast-region { bottom: auto; top: 70px; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .map-world.is-animated,
+  .seat,
+  .toast { transition: none; animation: none; }
+}
